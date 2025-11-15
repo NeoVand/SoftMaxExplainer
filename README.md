@@ -1,38 +1,94 @@
-# sv
+# SoftMaxExplainer
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+An interactive, educational visualization of the softmax function with temperature control. Explore how the softmax function transforms input data into probability distributions, and learn about its deep connections to statistical mechanics, information theory, and machine learning.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- 🎨 **Interactive Visualizations**: Real-time bar charts and distribution histograms
+- 🌡️ **Temperature Control**: Adjust the temperature parameter (0.1 to 5.0) to see its effect on distributions
+- 📊 **Dynamic Data**: Generate random data and control the number of data points (2-100)
+- 🔄 **Sorting**: View data in sorted order to better understand the transformation
+- 🌓 **Dark Mode**: Beautiful theme switching with full support for light and dark modes
+- 📚 **Educational Content**: Comprehensive explanations with historical context and mathematical derivations
+- 📐 **Beautiful LaTeX**: Professional equation rendering using KaTeX
 
-```sh
-# create a new project in the current directory
-npx sv create
+## Technologies
 
-# create a new project in my-app
-npx sv create my-app
-```
+- **SvelteKit** - Modern web framework
+- **Tailwind CSS** - Utility-first styling
+- **TypeScript** - Type-safe code
+- **KaTeX** - Mathematical equation rendering
 
-## Developing
+## Development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```bash
+# Install dependencies
+npm install
 
-```sh
+# Start development server
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
+# Build for production
 npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can preview the production build with `npm run preview`.
+## Deployment to GitHub Pages
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+This project is configured for automatic deployment to GitHub Pages via GitHub Actions.
+
+### Setup:
+
+1. Push your code to the `main` branch
+2. Enable GitHub Pages in your repository settings:
+   - Go to Settings → Pages
+   - Source: GitHub Actions
+3. The workflow will automatically build and deploy on every push to `main`
+
+### Manual Deployment:
+
+You can also trigger deployment manually from the Actions tab.
+
+The site will be available at: `https://[username].github.io/SoftMaxExplainer/`
+
+## Project Structure
+
+```
+src/
+├── lib/
+│   ├── components/      # Reusable components
+│   │   ├── BarChart.svelte
+│   │   ├── Histogram.svelte
+│   │   ├── InfoModal.svelte
+│   │   ├── LatexEquation.svelte
+│   │   └── ThemeToggle.svelte
+│   ├── stores/          # State management
+│   │   └── theme.svelte.ts
+│   └── utils/           # Utility functions
+│       └── softmax.ts
+└── routes/
+    ├── +layout.svelte
+    ├── +layout.ts
+    └── +page.svelte
+```
+
+## Educational Content
+
+The app includes comprehensive explanations of:
+
+- The softmax function and its mathematical properties
+- Historical origins (Boltzmann, Shannon, Jaynes)
+- Derivation from maximum entropy principle
+- Temperature parameter and its physical meaning
+- Real-world applications in ML/AI
+- Modern alternatives and research directions
+
+## Author
+
+Developed by **Neo Mohsenvand** for educational purposes.
+
+## License
+
+This project is open source and available for educational use.
