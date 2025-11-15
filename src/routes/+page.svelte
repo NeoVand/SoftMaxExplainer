@@ -11,7 +11,7 @@
 	// State
 	let fullDataset = $state<number[]>([]); // Always store 100 points
 	let temperature = $state(1.0);
-	let numDataPoints = $state(50);
+	let numDataPoints = $state(15);
 	let showInfo = $state(false);
 	let generationKey = $state(0); // Track when we actually regenerate
 	let isSorted = $state(false);
