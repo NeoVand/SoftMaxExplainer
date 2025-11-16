@@ -16,6 +16,7 @@ An interactive, educational visualization of the softmax function with comprehen
 
 ### Interactive Visualizations
 - **Real-time bar charts** showing input logits and softmax probabilities
+- **Temperature (τ)**: 0.1 to 5.0 - Control sharpness from peaked to uniform
 - **Horizontal distribution histograms** with adaptive binning (square root rule)
 - **Supports 2-1000 data points** for exploring different scales
 - **Auto-scaling axes** for maximum detail at any range
@@ -24,12 +25,10 @@ An interactive, educational visualization of the softmax function with comprehen
 - **Mean (μ)**: -2 to 2 - Shift the distribution center (demonstrates translation invariance)
 - **Standard Deviation (σ)**: 0 to 2 - Control spread (critically affects softmax output)
 - **Data Points**: 2 to 1000 - Explore sample size effects on distributions
-- **Temperature (τ)**: 0.1 to 5.0 - Control sharpness from peaked to uniform
 
 ### Advanced Features
 - **Sorted view** - See data in descending order
 - **Color-coded sliders** - Visual feedback for each parameter
-- **Logistic Normal Distribution** - Understand what softmax does to Gaussian data
 - **Dark mode** (default) - Beautiful theme with elegant color palette
 - **Interactive experiments** - Embedded in Learn More with mathematical explanations
 
@@ -37,8 +36,6 @@ An interactive, educational visualization of the softmax function with comprehen
 - **Historical journey** - Boltzmann, Shannon, and Jaynes with photos
 - **Mathematical derivation** - Temperature as Lagrange multiplier
 - **Beautiful LaTeX equations** - Professional typesetting throughout
-- **Interactive prompts** - Guided experiments to discover key properties
-- **Alternatives** - Sparsemax and Entmax with equations
 
 ## 🚀 Quick Start
 

@@ -161,7 +161,7 @@
 		
 		// Render f(x) icon with KaTeX
 		const katex = await import('katex');
-		const iconElement = document.querySelector('.equation-icon');
+		const iconElement = document.querySelector('.equation-icon') as HTMLElement;
 		if (iconElement) {
 			katex.default.render('f(x)', iconElement, {
 				displayMode: false,
