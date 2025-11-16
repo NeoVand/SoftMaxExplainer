@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import { theme } from '$lib/stores/theme.svelte';
 
 	interface Props {
 		data: number[];
@@ -17,19 +18,33 @@
 	// For logits, use symmetric range around zero
 	const maxValue = $derived(
 		isProbability 
-			? Math.max(...data, 0.01) // Auto-scale to actual max probability
-			: Math.max(...data.map(Math.abs), 1)
+			? Math.max(...data) // Auto-scale to actual max probability
+			: Math.max(...data.map(Math.abs)) // Auto-scale to actual max absolute value
 	);
 	const minValue = $derived(isProbability ? 0 : -maxValue);
 	const range = $derived(maxValue - minValue);
 
-	// Gradient colors
-	const positiveGradient = $derived(
-		color === 'emerald'
-			? 'linear-gradient(to top, rgb(16, 185, 129), rgb(52, 211, 153))'
-			: 'linear-gradient(to top, rgb(37, 99, 235), rgb(96, 165, 250))'
-	);
-	const negativeGradient = 'linear-gradient(to bottom, rgb(220, 38, 38), rgb(248, 113, 113))';
+	// Theme-aware diagonal gradients
+	const positiveGradient = $derived(() => {
+		const isDark = theme.current === 'dark';
+		
+		if (color === 'emerald') {
+			return isDark
+				? 'linear-gradient(165deg, rgb(16, 160, 120), rgb(20, 90, 70))'
+				: 'linear-gradient(165deg, rgb(16, 185, 129), rgb(167, 243, 208))';
+		} else {
+			return isDark
+				? 'linear-gradient(165deg, rgb(70, 130, 220), rgb(30, 60, 110))'
+				: 'linear-gradient(165deg, rgb(59, 130, 246), rgb(191, 219, 254))';
+		}
+	});
+	
+	const negativeGradient = $derived(() => {
+		const isDark = theme.current === 'dark';
+		return isDark
+			? 'linear-gradient(15deg, rgb(220, 80, 80), rgb(100, 40, 40))'
+			: 'linear-gradient(15deg, rgb(239, 68, 68), rgb(254, 202, 202))';
+	});
 
 	// Calculate bar metrics for each value
 	function getBarMetrics(value: number) {
@@ -41,14 +56,14 @@
 			return {
 				top: valuePosition,
 				height: zeroPosition - valuePosition,
-				gradient: positiveGradient
+				gradient: positiveGradient()
 			};
 		} else {
 			// Negative bar
 			return {
 				top: zeroPosition,
 				height: valuePosition - zeroPosition,
-				gradient: negativeGradient
+				gradient: negativeGradient()
 			};
 		}
 	}
@@ -85,7 +100,22 @@
 </script>
 
 <div class="flex h-full w-full flex-col">
-	<h3 class="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">{title}</h3>
+	<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+		{#if title.includes('Input')}
+			<!-- Input: Arrow going into a container -->
+			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+				<rect x="14" y="6" width="7" height="12" rx="1"></rect>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M3 12h9m0 0l-3-3m3 3l-3 3"></path>
+			</svg>
+		{:else}
+			<!-- Output: Arrow coming out of a container -->
+			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+				<rect x="3" y="6" width="7" height="12" rx="1" stroke-linecap="round" stroke-linejoin="round"></rect>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M10 12h11m0 0l-3-3m3 3l-3 3"></path>
+			</svg>
+		{/if}
+		{title}
+	</h3>
 	
 	<div class="relative flex flex-1 items-stretch gap-2">
 		<!-- Y-axis with ticks -->
@@ -136,19 +166,18 @@
 			{/each}
 
 			<!-- Bars container -->
-			<div class="absolute inset-0 flex px-1">
+			<div class="absolute inset-0 flex">
 				{#each data as value, i (`${generationKey}-${sortKey}-${i}`)}
 					{@const metrics = getBarMetrics(value)}
-					<div class="relative flex-1" style="min-width: 3px;">
+					<div class="relative flex-1" style="min-width: 0;">
 						<div
-							class="absolute inset-x-0.5 border border-white/30 transition-all duration-200 dark:border-gray-900/40"
-							class:rounded-t-sm={value >= 0}
-							class:rounded-b-sm={value < 0}
+							class="absolute w-full"
 							style="
 								background: {metrics.gradient};
 								top: {metrics.top}%;
 								height: {metrics.height}%;
-								min-height: 2px;
+								left: 0;
+								right: 0;
 							"
 						></div>
 					</div>

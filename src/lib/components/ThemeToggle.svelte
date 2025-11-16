@@ -4,16 +4,16 @@
 
 <button
 	onclick={() => theme.toggle()}
-	class="rounded-lg bg-gray-200 p-2.5 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+	class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 transition-all hover:bg-gray-200 dark:bg-gray-700/50 dark:hover:bg-gray-600/50"
 	aria-label="Toggle theme"
 >
 	{#if theme.current === 'light'}
+		<!-- Moon icon for light mode -->
 		<svg
-			class="h-5 w-5 text-gray-700"
+			class="h-4 w-4 text-gray-700"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
 		>
 			<path
 				stroke-linecap="round"
@@ -23,12 +23,12 @@
 			></path>
 		</svg>
 	{:else}
+		<!-- Sun icon for dark mode -->
 		<svg
-			class="h-5 w-5 text-gray-200"
+			class="h-4 w-4 text-gray-200"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
 		>
 			<path
 				stroke-linecap="round"
@@ -39,4 +39,3 @@
 		</svg>
 	{/if}
 </button>
-

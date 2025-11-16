@@ -22,13 +22,20 @@ export function softmax(values: number[], temperature: number = 1.0): number[] {
 }
 
 /**
- * Generate random data for demonstration
+ * Generate random data from a Gaussian (normal) distribution
+ * Uses Box-Muller transform to generate normally distributed values
  * @param count - Number of data points
- * @param min - Minimum value
- * @param max - Maximum value
- * @returns Array of random numbers (can include negative values)
+ * @param mean - Mean of the distribution (default: 0)
+ * @param stdDev - Standard deviation of the distribution (default: 3)
+ * @returns Array of random numbers from normal distribution
  */
-export function generateRandomData(count: number = 5, min: number = -5, max: number = 10): number[] {
-	return Array.from({ length: count }, () => Math.random() * (max - min) + min);
+export function generateRandomData(count: number = 5, mean: number = 0, stdDev: number = 3): number[] {
+	return Array.from({ length: count }, () => {
+		// Box-Muller transform for Gaussian distribution
+		const u1 = Math.random();
+		const u2 = Math.random();
+		const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+		return z0 * stdDev + mean;
+	});
 }
 

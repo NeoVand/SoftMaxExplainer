@@ -14,6 +14,15 @@ html {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* Custom background with blue-green tint in light mode */
+body {
+	background: linear-gradient(135deg, rgb(210, 235, 248), rgb(220, 240, 235));
+}
+
+.dark body {
+	background: rgb(17, 24, 39);
+}
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
 	width: 8px;

@@ -29,8 +29,11 @@
 
 	// Render LaTeX equations when modal opens
 	$effect(() => {
-		if (open && !equationsRendered) {
-			renderEquations();
+		if (open) {
+			// Small delay to ensure DOM is ready
+			setTimeout(() => {
+				renderEquations();
+			}, 100);
 		}
 	});
 
@@ -49,7 +52,9 @@
 			{ id: 'eq-lagrangian', tex: String.raw`\mathcal{L} = -\sum_i p_i \log p_i - \lambda\left(\sum_i p_i - 1\right) - \beta\left(\sum_i p_i E_i - \langle E \rangle\right)` },
 			{ id: 'eq-solution', tex: String.raw`p_i = \frac{e^{-\beta E_i}}{Z}` },
 			{ id: 'eq-beta', tex: String.raw`\beta = \frac{1}{kT}` },
-			{ id: 'eq-final', tex: String.raw`p_i = \frac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}` }
+			{ id: 'eq-final', tex: String.raw`p_i = \frac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}` },
+			{ id: 'eq-sparsemax', tex: String.raw`\text{sparsemax}(z) = \underset{p \in \Delta^{K-1}}{\arg\min} \|p - z\|^2` },
+			{ id: 'eq-entmax', tex: String.raw`\text{entmax}_\alpha(z) = \underset{p \in \Delta^{K-1}}{\arg\max} \left\langle p, z \right\rangle - H_\alpha(p)` }
 		];
 
 		equations.forEach(({ id, tex }) => {
@@ -102,7 +107,7 @@
 				<div class="flex items-center gap-2">
 					<button
 						onclick={() => (showAbout = true)}
-						class="rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-all hover:shadow-md"
+						class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 					>
 						About
 					</button>
@@ -124,7 +129,12 @@
 					
 					<!-- Introduction -->
 					<section class="mb-8">
-						<h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">What is Softmax?</h3>
+						<h3 class="flex items-center gap-2 text-xl font-bold text-gray-900 dark:text-gray-100">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+							</svg>
+							What is Softmax?
+						</h3>
 						<p class="text-gray-700 dark:text-gray-300">
 							The softmax function is one of the most fundamental tools in machine learning, working tirelessly behind the scenes in everything from image classification to language models. It transforms a vector of real numbers into a probability distribution, where each output is between 0 and 1, and all outputs sum to exactly 1.
 						</p>
@@ -133,6 +143,19 @@
 							<div id="eq-main" class="text-center"></div>
 							<p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
 								where τ (tau) is the temperature parameter
+							</p>
+						</div>
+
+						<div class="mt-4 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 p-4 dark:from-blue-900/20 dark:to-cyan-900/20">
+							<h5 class="flex items-center gap-2 font-semibold text-blue-900 dark:text-blue-300">
+								<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+								</svg>
+								Try This Experiment:
+							</h5>
+							<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+								<strong>The Translation Invariance Property</strong><br/>
+								Adjust the <strong>Mean (μ)</strong> slider and watch closely: the softmax output probabilities <em>don't change at all</em>! This remarkable property means softmax only cares about <em>relative differences</em> between values, not their absolute position. Mathematically: softmax(x + c) = softmax(x) for any constant c.
 							</p>
 						</div>
 					</section>
@@ -226,7 +249,7 @@
 						</p>
 
 						<div class="mt-4 space-y-4">
-							<div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
+							<div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
 								<h5 class="font-semibold text-gray-900 dark:text-gray-100">Step 1: Set Up the Problem</h5>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 									We want to find a probability distribution <em>p</em> that maximizes entropy:
@@ -314,6 +337,19 @@
 								In physics, temperature controls the energy distribution of particles. At high temperatures, particles have more random, uniform energy distributions. At low temperatures, particles settle into lower energy states (more ordered). This analogy extends beautifully to machine learning, where temperature controls the "randomness" of predictions.
 							</p>
 						</div>
+
+						<div class="mt-4 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 p-4 dark:from-emerald-900/20 dark:to-teal-900/20">
+							<h5 class="flex items-center gap-2 font-semibold text-emerald-900 dark:text-emerald-300">
+								<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+								</svg>
+								Scale Sensitivity Experiment:
+							</h5>
+							<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+								<strong>Standard Deviation is Critical!</strong><br/>
+								Unlike mean, <strong>Standard Deviation (σ)</strong> dramatically affects softmax output. Try this: Set σ=0.2 for a very peaked distribution, then increase to σ=2 and watch how the output becomes nearly uniform! Lower variance makes softmax "confident" (picks clear winners), while higher variance makes it "uncertain" (spreads probability mass).
+							</p>
+						</div>
 					</section>
 
 					<!-- Mathematical Properties -->
@@ -321,8 +357,8 @@
 						<h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Key Mathematical Properties</h3>
 						
 						<div class="space-y-4">
-							<div class="rounded-lg border-l-4 border-blue-500 bg-gray-50 p-4 dark:bg-gray-800/50">
-								<h5 class="font-semibold text-gray-900 dark:text-gray-100">Differentiability</h5>
+							<div class="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+								<h5 class="font-semibold text-blue-900 dark:text-blue-300">Differentiability</h5>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 									Softmax is smooth and differentiable everywhere, which is essential for training neural networks using gradient-based methods like backpropagation.
 								</p>
@@ -332,27 +368,67 @@
 								</p>
 							</div>
 
-							<div class="rounded-lg border-l-4 border-emerald-500 bg-gray-50 p-4 dark:bg-gray-800/50">
-								<h5 class="font-semibold text-gray-900 dark:text-gray-100">Translation Invariance</h5>
+							<div class="rounded-lg bg-emerald-50 p-4 dark:bg-emerald-900/20">
+								<h5 class="font-semibold text-emerald-900 dark:text-emerald-300">Translation Invariance</h5>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 									Adding a constant to all inputs doesn't change the output: σ(z + c) = σ(z). This property is crucial for numerical stability.
 								</p>
 							</div>
 
-							<div class="rounded-lg border-l-4 border-purple-500 bg-gray-50 p-4 dark:bg-gray-800/50">
-								<h5 class="font-semibold text-gray-900 dark:text-gray-100">Monotonicity</h5>
+							<div class="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
+								<h5 class="font-semibold text-purple-900 dark:text-purple-300">Monotonicity</h5>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 									Preserves the ordering of input values: if z<sub>i</sub> &gt; z<sub>j</sub>, then σ(z)<sub>i</sub> &gt; σ(z)<sub>j</sub>
 								</p>
 							</div>
 
-							<div class="rounded-lg border-l-4 border-orange-500 bg-gray-50 p-4 dark:bg-gray-800/50">
-								<h5 class="font-semibold text-gray-900 dark:text-gray-100">Positive Outputs</h5>
+							<div class="rounded-lg bg-orange-50 p-4 dark:bg-orange-900/20">
+								<h5 class="font-semibold text-orange-900 dark:text-orange-300">Positive Outputs</h5>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 									Even if inputs are negative, outputs are always positive thanks to the exponential function.
 								</p>
 							</div>
 						</div>
+					</section>
+
+					<!-- Softmax of Normal Distribution -->
+					<section class="mb-8">
+						<h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">The Logistic Normal Distribution</h3>
+						<p class="text-gray-700 dark:text-gray-300">
+							Our visualizer samples data from a <strong>Gaussian (Normal) distribution</strong>. When you apply softmax to normally distributed logits, you create what's known as a <strong>logistic normal distribution</strong> - a fascinating probability distribution with unique properties!
+						</p>
+
+						<div class="mt-4 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 p-4 dark:from-indigo-900/20 dark:to-purple-900/20">
+							<h5 class="flex items-center gap-2 font-semibold text-indigo-900 dark:text-indigo-300">
+								<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+								</svg>
+								Mathematical Connection
+							</h5>
+							<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+								Softmax is mathematically equivalent to the <strong>additive logistic transformation</strong>. When the input logits are normally distributed, the output probabilities follow a <em>multivariate logistic normal distribution</em>. This distribution lives on the probability simplex (all components sum to 1) and has no closed-form moments, making it a fascinating object of study in statistics!
+							</p>
+							<p class="mt-2 text-xs text-gray-600 dark:text-gray-400">
+								Reference: <a href="https://en.wikipedia.org/wiki/Logit-normal_distribution" target="_blank" rel="noopener" class="underline hover:text-gray-800 dark:hover:text-gray-200">Wikipedia - Logit-normal distribution</a>
+							</p>
+						</div>
+
+						<div class="mt-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 p-4 dark:from-purple-900/20 dark:to-pink-900/20">
+							<h5 class="flex items-center gap-2 font-semibold text-purple-900 dark:text-purple-300">
+								<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+								</svg>
+								The Data Points Experiment:
+							</h5>
+							<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+								<strong>Sample Size Effects on the Logistic Normal</strong><br/>
+								Start with 15 data points - softmax clearly picks winners from the Gaussian tail. Now increase to 1000 points. Notice how the output becomes more uniform? With many samples, you're better sampling the entire Gaussian (including its tails), so softmax must distribute probability among more high-valued inputs. The output histogram's characteristic skewed shape reflects the logistic normal distribution's properties!
+							</p>
+						</div>
+
+						<p class="mt-4 text-sm text-gray-700 dark:text-gray-300">
+							<strong>Why This Matters:</strong> Understanding that softmax transforms normal distributions into logistic normal distributions is crucial in machine learning. Many neural network outputs (logits) are approximately Gaussian due to the Central Limit Theorem, so knowing the properties of the resulting probability distribution helps us understand model behavior and calibration.
+						</p>
 					</section>
 
 					<!-- Applications -->
@@ -462,15 +538,23 @@
 						<div class="space-y-4">
 							<div class="rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 p-4 dark:from-purple-900/20 dark:to-pink-900/20">
 								<h5 class="font-semibold text-purple-900 dark:text-purple-300">Sparsemax</h5>
+								<div id="eq-sparsemax" class="my-3 text-center"></div>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-									Projects onto the probability simplex, producing sparse distributions with exact zeros. Particularly useful in attention mechanisms for more focused, interpretable attention.
+									Projects onto the probability simplex Δ<sup>K-1</sup>, producing sparse distributions with exact zeros. Unlike softmax, sparsemax can confidently assign zero probability to irrelevant classes, making it particularly useful in attention mechanisms for more focused, interpretable attention.
+								</p>
+								<p class="mt-2 text-xs text-gray-600 dark:text-gray-400">
+									The minimization finds the Euclidean projection of z onto the probability simplex.
 								</p>
 							</div>
 
 							<div class="rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 p-4 dark:from-blue-900/20 dark:to-cyan-900/20">
-								<h5 class="font-semibold text-blue-900 dark:text-blue-300">Entmax</h5>
+								<h5 class="font-semibold text-blue-900 dark:text-blue-300">Entmax (α-Entmax)</h5>
+								<div id="eq-entmax" class="my-3 text-center"></div>
 								<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-									Generalizes both softmax (α=1) and sparsemax (α=2), providing tunable sparsity. The parameter α controls the trade-off between smooth and sparse outputs.
+									Generalizes both softmax (α=1) and sparsemax (α=2) through the parameter α, providing tunable sparsity. H<sub>α</sub>(p) is the Tsallis α-entropy. The parameter α controls the trade-off between smooth and sparse outputs, offering a continuum of behaviors.
+								</p>
+								<p class="mt-2 text-xs text-gray-600 dark:text-gray-400">
+									α=1 recovers softmax, α=2 recovers sparsemax, and 1 &lt; α &lt; 2 provides intermediate sparsity.
 								</p>
 							</div>
 						</div>
@@ -544,50 +628,51 @@
 					</svg>
 				</button>
 			</div>
-			<p class="text-gray-700 dark:text-gray-300">
+			<p class="text-center text-gray-700 dark:text-gray-300">
 				This application was developed by <strong>Neo Mohsenvand</strong> for educational purposes.
 			</p>
-			<div class="mt-4 flex justify-end">
-				<button
-					onclick={() => (showAbout = false)}
-					class="rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-all hover:shadow-md"
-				>
-					Close
-				</button>
-			</div>
 		</div>
 	</div>
 {/if}
 
 <style>
-	/* Custom scrollbar for modal content */
+	/* Minimal scrollbar for modal content */
 	.overflow-y-auto {
 		scrollbar-width: thin;
+		scrollbar-color: transparent transparent;
+	}
+
+	.overflow-y-auto:hover {
+		scrollbar-color: rgb(209, 213, 219) transparent;
 	}
 
 	.overflow-y-auto::-webkit-scrollbar {
-		width: 8px;
+		width: 6px;
 	}
 
 	.overflow-y-auto::-webkit-scrollbar-track {
-		background: rgb(243, 244, 246);
-		border-radius: 4px;
+		background: transparent;
 	}
 
 	.overflow-y-auto::-webkit-scrollbar-thumb {
+		background: transparent;
+		border-radius: 3px;
+	}
+
+	.overflow-y-auto:hover::-webkit-scrollbar-thumb {
 		background: rgb(209, 213, 219);
-		border-radius: 4px;
 	}
 
 	.overflow-y-auto::-webkit-scrollbar-thumb:hover {
 		background: rgb(156, 163, 175);
 	}
 
-	:global(.dark) .overflow-y-auto::-webkit-scrollbar-track {
-		background: rgb(31, 41, 55);
+	/* Dark mode */
+	:global(.dark) .overflow-y-auto:hover {
+		scrollbar-color: rgb(75, 85, 99) transparent;
 	}
 
-	:global(.dark) .overflow-y-auto::-webkit-scrollbar-thumb {
+	:global(.dark) .overflow-y-auto:hover::-webkit-scrollbar-thumb {
 		background: rgb(75, 85, 99);
 	}
 

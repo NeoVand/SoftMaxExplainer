@@ -1,26 +1,44 @@
-# SoftMaxExplainer
+# SoftMax Explainer
 
 ![SoftMaxExplainer Preview](https://img.shields.io/badge/SvelteKit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
-An interactive, educational visualization of the softmax function with temperature control. Built with SvelteKit and Tailwind CSS.
+An interactive, educational visualization of the softmax function with comprehensive controls for exploring probability distributions. Built with SvelteKit and Tailwind CSS.
 
 🔗 **[Live Demo](https://neovand.github.io/SoftMaxExplainer/)**
 
 <p align="center" style="margin: 0; padding: 0;">
-  <img src="softmaxExplainer.gif" alt="SoftMaxExplainer Demo" style="display: block; width: 100%; max-width: 100vw; height: auto; margin: 0 auto;" />
+  <img src="SoftmaxExplainerImage.png" alt="SoftMaxExplainer Demo" style="display: block; width: 100%; max-width: 100vw; height: auto; margin: 0 auto;" />
 </p>
 
 ## ✨ Features
 
-- **Interactive Visualizations** - Real-time bar charts and distribution histograms showing input logits and output probabilities
-- **Temperature Control** - Adjust τ from 0.1 (sharp) to 5.0 (uniform) and see instant effects
-- **Dynamic Data** - Generate random datasets with 2-100 data points
-- **Sorting** - View data sorted in descending order
-- **Dark Mode** - Seamless theme switching with beautiful color schemes
-- **Educational Content** - Comprehensive guide with LaTeX equations, historical context (Boltzmann, Shannon, Jaynes), and mathematical derivations
-- **Distribution Analysis** - Histogram views showing frequency distributions with area calculations
+### Interactive Visualizations
+- **Real-time bar charts** showing input logits and softmax probabilities
+- **Horizontal distribution histograms** with adaptive binning (square root rule)
+- **Supports 2-1000 data points** for exploring different scales
+- **Auto-scaling axes** for maximum detail at any range
+
+### Gaussian Data Controls
+- **Mean (μ)**: -2 to 2 - Shift the distribution center (demonstrates translation invariance)
+- **Standard Deviation (σ)**: 0 to 2 - Control spread (critically affects softmax output)
+- **Data Points**: 2 to 1000 - Explore sample size effects on distributions
+- **Temperature (τ)**: 0.1 to 5.0 - Control sharpness from peaked to uniform
+
+### Advanced Features
+- **Sorted view** - See data in descending order
+- **Color-coded sliders** - Visual feedback for each parameter
+- **Logistic Normal Distribution** - Understand what softmax does to Gaussian data
+- **Dark mode** (default) - Beautiful theme with elegant color palette
+- **Interactive experiments** - Embedded in Learn More with mathematical explanations
+
+### Educational Content
+- **Historical journey** - Boltzmann, Shannon, and Jaynes with photos
+- **Mathematical derivation** - Temperature as Lagrange multiplier
+- **Beautiful LaTeX equations** - Professional typesetting throughout
+- **Interactive prompts** - Guided experiments to discover key properties
+- **Alternatives** - Sparsemax and Entmax with equations
 
 ## 🚀 Quick Start
 
@@ -28,32 +46,57 @@ An interactive, educational visualization of the softmax function with temperatu
 
 - Node.js 20+ 
 - npm or pnpm
+- make (optional, but recommended)
 
-### Installation
+### Installation & Setup
 
+**Using Makefile (Recommended):**
+
+Clone the repository:
 ```bash
-# Clone the repository
 git clone https://github.com/neovand/SoftMaxExplainer.git
 cd SoftMaxExplainer
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Open http://localhost:5173 in your browser
 ```
+
+Install and setup:
+```bash
+make setup
+```
+
+Start the development server:
+```bash
+make dev
+```
+
+**Alternatively, using npm:**
+
+```bash
+git clone https://github.com/neovand/SoftMaxExplainer.git
+cd SoftMaxExplainer
+npm install
+npm run dev
+```
+
+Open http://localhost:5173 in your browser.
 
 ### Build for Production
 
+With Makefile:
 ```bash
-# Build the application
-npm run build
-
-# Preview the production build
-npm run preview
+make build
 ```
+
+Or with npm:
+```bash
+npm run build
+```
+
+## 🧪 Key Experiments to Try
+
+1. **Translation Invariance**: Change Mean (μ) - softmax output stays unchanged!
+2. **Scale Sensitivity**: Vary Standard Deviation (σ) - dramatic effect on output distribution
+3. **Sample Size Effects**: Compare 15 vs 1000 data points - see the logistic normal distribution emerge
+4. **Temperature Impact**: Low τ = confident, high τ = uncertain predictions
 
 ## 🛠️ Development
 
@@ -63,15 +106,15 @@ npm run preview
 src/
 ├── lib/
 │   ├── components/
-│   │   ├── BarChart.svelte       # Main bar chart visualization
-│   │   ├── Histogram.svelte      # Distribution histogram with area
-│   │   ├── InfoModal.svelte      # Educational modal content
+│   │   ├── BarChart.svelte       # Main bar chart with theme-aware gradients
+│   │   ├── Histogram.svelte      # Horizontal histogram with split coloring
+│   │   ├── InfoModal.svelte      # Comprehensive educational content
 │   │   ├── LatexEquation.svelte  # KaTeX equation renderer
 │   │   └── ThemeToggle.svelte    # Dark/light mode toggle
 │   ├── stores/
 │   │   └── theme.svelte.ts       # Theme state management
 │   └── utils/
-│       └── softmax.ts            # Softmax calculation & data generation
+│       └── softmax.ts            # Softmax + Gaussian data generation
 └── routes/
     ├── +layout.svelte            # Root layout
     ├── +layout.ts                # Prerendering config
@@ -81,47 +124,38 @@ src/
 ### Key Technologies
 
 - **SvelteKit 2** - Framework with Svelte 5 runes
-- **Tailwind CSS 4** - Styling with custom gradients
+- **Tailwind CSS 4** - Utility-first styling with dark mode
 - **TypeScript** - Type-safe development
-- **KaTeX** - Mathematical equation rendering
-- **Vite** - Fast build tool
+- **KaTeX** - Beautiful mathematical equation rendering
+- **Box-Muller Transform** - Gaussian random number generation
 
-### Available Scripts
+### Common Development Tasks
 
+**Makefile commands:**
 ```bash
-npm run dev          # Start dev server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run check        # Type-check with svelte-check
-npm run lint         # Lint code
-npm run format       # Format with Prettier
+make help           # Show all available commands
+make check          # Type-check with svelte-check
+make format         # Format code with Prettier
+make lint           # Run linter
+make clean          # Remove build artifacts
+make rebuild        # Clean and rebuild
 ```
 
-## 📚 What You'll Learn
-
-The application provides deep insights into:
-
-- **Mathematical Foundation** - Formal definition, properties, and derivation from maximum entropy
-- **Historical Context** - Journey from Boltzmann (1870s) to Shannon (1948) to Jaynes (1957)
-- **Temperature as Lagrange Multiplier** - Step-by-step derivation showing temperature emerges naturally
-- **Real-World Applications** - Computer vision, NLP, reinforcement learning, attention mechanisms
-- **Limitations** - Understanding the softmax bottleneck and modern alternatives
-
-## 🎓 Educational Value
-
-Perfect for:
-- Students learning machine learning fundamentals
-- Educators teaching neural networks
-- Researchers exploring probabilistic models
-- Anyone curious about the mathematics behind AI
+**NPM equivalents:**
+```bash
+npm run check       # Type-check
+npm run format      # Format code
+npm run lint        # Run linter
+npm run test:e2e    # Run end-to-end tests
+```
 
 ## 🤝 Contributing
 
 Feel free to fork this project and extend it! Some ideas:
-- Add more distribution visualizations
-- Include numerical examples
-- Add interactive comparison with sigmoid
+- Add more distribution types (uniform, exponential, etc.)
 - Visualize gradients and backpropagation
+- Add comparison with other activation functions
+- Include more interactive experiments
 
 ## 👨‍💻 Author
 
